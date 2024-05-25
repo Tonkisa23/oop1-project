@@ -1,14 +1,15 @@
-package bg.tu_varna.sit.а1.f22621643;
+package bg.tu_varna.sit.a1.f22621643;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class AcademicSystem {
-    List<Student> students;
-    List<Discipline> disciplines;
-    Map<String, List<String>> programCourses;
+    private List<Student> students;
+    private List<Discipline> disciplines;
+    private Map<String, List<String>> programCourses;
+
+    private String currentFilename;
+    private boolean fileLoaded;
 
     public AcademicSystem() {
         students = new ArrayList<>();
@@ -127,7 +128,7 @@ public class AcademicSystem {
         }
     }
 
-    public void print(int facultyNumber) {
+    public void printReport(int facultyNumber) {
         for (Student student : students) {
             if (student.getFacultyNumber() == facultyNumber) {
                 System.out.println("Справка за студент с факултетен номер " + facultyNumber + ":");
@@ -150,7 +151,7 @@ public class AcademicSystem {
         System.out.println("Студент с факултетен номер " + facultyNumber + " не е намерен.");
     }
 
-    public void printAll(String program, String year) {
+    public void printAllReport(String program, String year) {
         System.out.println("Справка за всички студенти в специалност " + program + " и година " + year + ":");
         for (Student student : students) {
             if (student.getProgram().equals(program)) {
@@ -188,7 +189,7 @@ public class AcademicSystem {
         }
     }
 
-    public void protocol(String course) {
+    public void printProtocol(String course) {
         System.out.println("Протокол за дисциплина: " + course);
         for (Student student : students) {
             if (student.getEnrolledCourses().contains(course)) {
@@ -197,7 +198,7 @@ public class AcademicSystem {
         }
     }
 
-    public void report(int facultyNumber) {
+    public void printReportCard(int facultyNumber) {
         for (Student student : students) {
             if (student.getFacultyNumber() == facultyNumber) {
                 System.out.println("Справка за студент: " + student.getName());
@@ -214,6 +215,88 @@ public class AcademicSystem {
                 break;
             }
         }
+    }
+
+    public void openFile(String filename) throws IOException, ClassNotFoundException {
+        try {
+            File file = new File(filename);
+            if (!file.exists()) {
+                file.createNewFile();
+                students.clear();
+                fileLoaded = true;
+                currentFilename = filename;
+                System.out.println("Създаден е нов празен файл: " + filename);
+            } else {
+                try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+                    students = (List<Student>) ois.readObject();
+                    fileLoaded = true;
+                    currentFilename = filename;
+                    System.out.println("Файлът е отворен успешно.");
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Грешка при отваряне на файла: " + e.getMessage());
+        }
+    }
+
+    public void closeFile() {
+        if (!fileLoaded) {
+            System.out.println("Няма отворен файл.");
+            return;
+        }
+        students.clear();
+        currentFilename = null;
+        fileLoaded = false;
+        System.out.println("Файлът е затворен.");
+    }
+
+    public void saveFile() throws IOException {
+        if (!fileLoaded) {
+            System.out.println("Няма отворен файл за запис.");
+            return;
+        }
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(currentFilename))) {
+            oos.writeObject(students);
+            System.out.println("Файлът е запазен успешно.");
+        } catch (IOException e) {
+            System.out.println("Грешка при запис на файла: " + e.getMessage());
+        }
+    }
+
+    public void saveFileAs(String directory) throws IOException {
+        if (!fileLoaded) {
+            System.out.println("Няма отворен файл за запис.");
+            return;
+        }
+
+        if (directory == null || directory.isEmpty()) {
+            System.out.println("Невалидна директория.");
+            return;
+        }
+
+        File dir = new File(directory);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        System.out.println("Въведете ново име на файла:");
+        Scanner scanner = new Scanner(System.in);
+        String newFilename = scanner.nextLine();
+        File file = new File(dir, newFilename);
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            oos.writeObject(students);
+            currentFilename = file.getAbsolutePath();
+            System.out.println("Файлът е запазен успешно като " + currentFilename);
+        } catch (IOException e) {
+            System.out.println("Грешка при запис на файла: " + e.getMessage());
+        }
+    }
+
+    public void printHelp() {
+        System.out.println("13. Изход - излиза от програмата");
+        System.out.println("14. Отвори файл - отваря файл");
+        System.out.println("15. Затвори файл - затваря отворения вече файл");
+        System.out.println("16. Запази файл - запазва направените птомени в същия файл");
+        System.out.println("17. Запази файл като (директория) - запазва направените промени в нов файл, със съответна директория");
     }
 }
 

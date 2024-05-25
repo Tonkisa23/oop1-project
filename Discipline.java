@@ -1,8 +1,8 @@
-package bg.tu_varna.sit.а1.f22621643;
+package bg.tu_varna.sit.a1.f22621643;
 
 public class Discipline {
-    String name;
-    DisciplineType type;
+    private String name;
+    private DisciplineType type;
 
     public Discipline(String name, DisciplineType type) {
         this.name = name;

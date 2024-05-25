@@ -1,4 +1,4 @@
-package bg.tu_varna.sit.а1.f22621643;
+package bg.tu_varna.sit.a1.f22621643;
 
 public enum DisciplineType {
     ZADYLJITELNA,
