@@ -1,7 +1,7 @@
-package bg.tu_varna.sit.a1.f22621643;
+package bg.tu_varna.s22621643.Model;
 
-public enum Status {
-    ZAPISAN,
-    PREKYSNAL,
-    ZAVYRSHIL
+import java.io.Serializable;
+
+public enum Status implements Serializable {
+    ENROLLED, INTERRUPTED, GRADUATED
 }

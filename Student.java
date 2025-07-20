@@ -1,99 +1,33 @@
-package bg.tu_varna.sit.a1.f22621643;
+package bg.tu_varna.s22621643.Model;
 
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
 
-public class Student {
-    private String name;
-    private int facultyNumber;
-    private int year;
-    private String program;
-    private String group;
-    private Status status;
-    private double averageGrade;
-    private List<String> enrolledCourses;
-    private Map<String, Double> grades;
+public class Student implements Serializable {
+    public String name;
+    public String facultyNumber;
+    public String specialization;
+    public String group;
+    public int year;
+    public Status status;
+    public Map<String, Integer> grades = new HashMap<>();
+    public Set<String> enrolledCourses = new HashSet<>();
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Student(String name, String facultyNumber, int year, String specialization, String group) {
         this.name = name;
-    }
-
-    public int getFacultyNumber() {
-        return facultyNumber;
-    }
-
-    public void setFacultyNumber(int facultyNumber) {
         this.facultyNumber = facultyNumber;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
         this.year = year;
-    }
-
-    public String getProgram() {
-        return program;
-    }
-
-    public void setProgram(String program) {
-        this.program = program;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
+        this.specialization = specialization;
         this.group = group;
+        this.status = Status.ENROLLED;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public List<String> getEnrolledCourses() {
-        return enrolledCourses;
-    }
-
-    public void setEnrolledCourses(List<String> enrolledCourses) {
-        this.enrolledCourses = enrolledCourses;
-    }
-
-    public Map<String, Double> getGrades() {
-        return grades;
-    }
-
-    public void setGrades(Map<String, Double> grades) {
-        this.grades = grades;
-    }
-
-    public double calculateAverage(Map<String, Double> grades, List<String> enrolledCourses) {
-        double sum = 0.0;
-        int count = 0;
-
-        for (String enrolledCourse : enrolledCourses) {
-            Double grade = grades.get(enrolledCourse);
-            if (grade != null) {
-                sum += grade;
-                count++;
-            }
+    public double averageGrade() {
+        int total = 0, count = 0;
+        for (String course : enrolledCourses) {
+            total += grades.getOrDefault(course, 2);
+            count++;
         }
-
-        return count > 0 ? sum / count : 0.0;
-    }
-
-    public double getAverageGrade() {
-        return averageGrade = calculateAverage(grades, enrolledCourses);
+        return count == 0 ? 0.0 : total / (double) count;
     }
 }
